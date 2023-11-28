@@ -10,11 +10,11 @@ library(tidyverse)
 library(lubridate)
 library(kableExtra)
 library(broman)
-source("../../scripts/viridis.R")
-source("../../scripts/ggprob.R")
+source("../scripts/viridis.R")
+source("../scripts/ggprob.R")
 theme_set(theme_minimal())
 
-attendence = read_csv("../data/School_Attendance_by_Student_Group_and_District__2021-2022.csv")
+attendence = read_csv("School_Attendance_by_Student_Group_and_District__2021-2022.csv")
 
 ```
 
