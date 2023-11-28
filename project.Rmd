@@ -13,22 +13,46 @@ library(broman)
 source("../scripts/viridis.R")
 source("../scripts/ggprob.R")
 theme_set(theme_minimal())
+```
 
-attendence = read_csv("School_Attendance_by_Student_Group_and_District__2021-2022.csv")
+```{r}
+
+attendance_orig = read_csv("School_Attendance_by_Student_Group_and_District__2021-2022.csv",
+                           name_repair = make.names) %>% 
+  select(-Category, -Reporting.period, -Date.update) %>% 
+  rename(district_code = District.code,
+         district_name = District.name,
+         group = Student.group) %>% 
+  pivot_longer(cols = -c(district_code, district_name, group), 
+               names_pattern = "^X(\\d{4}\\.\\d{4})\\.(\\w+\\.\\w+).*$", 
+               names_to = c("year", "name")) %>% 
+  pivot_wider(names_from = "name", values_from = "value") %>% 
+  rename(count = student.count,
+         attendance_rate = attendance.rate)
+attendance_orig$year = attendance_orig$year %>% str_replace("\\.", "-")
+
+attendance = attendance_orig %>% filter(Student.group == "Free/Reduced Price Meal Eligible" | 
+                                          Student.group == "All Students") %>% 
+  group_by(District.name) %>% 
+  filter(n() == 2) %>% 
+  ungroup()
 
 ```
 
 
 # Introduction
 
+The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic by examining attendance rates
+
 - The opening sentence or sentences should draw the reader into your report by providing high-level motivation for the analysis. 
 - Describe the question or questions of interest and the motivation for the analysis.
 - Conclude the introduction with a thesis statement.
-- A thesis statement comprises one or two declarative sentences that summarize the main point of the report and clearly makes an assertion and communicates to the reader the position the authors have taken on the topic.1Links to an external site.
+- A thesis statement comprises one or two declarative sentences that summarize the main point of the report and clearly makes an assertion and communicates to the reader the position the authors have taken on the topic.
 
-Data from https://catalog.data.gov/dataset/school-attendance-by-student-group-and-district-2021-2022
 
 # Background
+
+Data from https://catalog.data.gov/dataset/school-attendance-by-student-group-and-district-2021-2022
 
 - Describe the data set, how it was collected, what the variables mean.
 - Cite the source of your data.
