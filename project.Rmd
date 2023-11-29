@@ -42,7 +42,7 @@ attendance = attendance_orig %>% filter(Student.group == "Free/Reduced Price Mea
 
 # Introduction
 
-The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic by examining attendance rates
+The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic by examining attendance rates between INSERT_GROUP_HERE and the student body as a whole.
 
 - The opening sentence or sentences should draw the reader into your report by providing high-level motivation for the analysis. 
 - Describe the question or questions of interest and the motivation for the analysis.
