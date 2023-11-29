@@ -15,7 +15,7 @@ source("../scripts/ggprob.R")
 theme_set(theme_minimal())
 ```
 
-```{r}
+```{r, include=FALSE}
 
 attendance_orig = read_csv("School_Attendance_by_Student_Group_and_District__2021-2022.csv",
                            name_repair = make.names) %>% 
@@ -29,20 +29,20 @@ attendance_orig = read_csv("School_Attendance_by_Student_Group_and_District__202
   pivot_wider(names_from = "name", values_from = "value") %>% 
   rename(count = student.count,
          attendance_rate = attendance.rate)
+
 attendance_orig$year = attendance_orig$year %>% str_replace("\\.", "-")
 
-attendance = attendance_orig %>% filter(Student.group == "Free/Reduced Price Meal Eligible" | 
-                                          Student.group == "All Students") %>% 
-  group_by(District.name) %>% 
-  filter(n() == 2) %>% 
-  ungroup()
+attendance = attendance_orig %>% 
+  filter(group == "Free/Reduced Price Meal Eligible" |
+           group == "All Students") %>% 
+  filter(!is.na(count) & !is.na(attendance_rate))
 
 ```
 
 
 # Introduction
 
-The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic by examining attendance rates between INSERT_GROUP_HERE and the student body as a whole.
+The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic by examining attendance rates between students who qualified for free or reduced price lunch and the student body as a whole. We believe that the effects of the COVID-19 pandemic has had an unequal affect on students who qualify for food assistance, resulting in them missing a greater amount of school than average.
 
 - The opening sentence or sentences should draw the reader into your report by providing high-level motivation for the analysis. 
 - Describe the question or questions of interest and the motivation for the analysis.
@@ -54,6 +54,8 @@ The COVID-19 pandemic had far reaching impacts on our daily lives. One area that
 
 Data from https://catalog.data.gov/dataset/school-attendance-by-student-group-and-district-2021-2022
 
+This data set was collected by State of Connecticut Department of Education^[https://catalog.data.gov/dataset/school-attendance-by-student-group-and-district-2021-2022] to measure attendance rates for all of the school districts in the state. Data for certain groups were suppressed to either maintain anonymity or to prevent misinterpretation of statistics from very small sample sizes as being as representative as those from larger ones. As a result, schools that didn't have published statistics on the attendance of students who qualified for free/reduced price meals were excluded. 
+
 - Describe the data set, how it was collected, what the variables mean.
 - Cite the source of your data.
 - Describe any background information needed to better comprehend the question or questions you are posing and how the data relate to the question.
@@ -61,6 +63,26 @@ Data from https://catalog.data.gov/dataset/school-attendance-by-student-group-an
 - Describe what you intend to do in the rest of the report.
 
 # Analysis
+
+Below we can see the median attendance rates for students, split into 
+
+```{r,include=FALSE}
+
+attendance_rate_mean = attendance %>% 
+  group_by(year, group) %>% 
+  summarise(mean = mean(attendance_rate))
+
+
+attendance %>% ggplot(aes(x = attendance_rate)) +
+  facet_grid(cols = vars(year), rows = vars(group), labeller = label_wrap_gen()) +
+  geom_density() +
+  geom_vline(data = attendance_rate_mean, aes(xintercept = mean), color = "red") +
+  labs(title = "Attendance rates for Students in Conn.",
+       x = "Attendance Rate",
+       y = "Density") + 
+  theme(strip.text.y.right = element_text(angle = 0))
+
+```
 
 - Include numerical and graphical summaries of the data. Be sure to introduce and describe your numerical and graphical summaries.  Do not display a series of summaries without text explaining them.
 - Make sure to include at least one graphical display of the data that best supports your main conclusions for your primary question, and explain how it supports your conclusions.
