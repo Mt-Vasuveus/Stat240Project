@@ -42,12 +42,12 @@ attendance = attendance_orig %>%
 
 # Introduction
 
-The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic by examining attendance rates between students who qualified for free or reduced price lunch and the student body as a whole. We believe that the effects of the COVID-19 pandemic has had an unequal affect on students who qualify for food assistance, resulting in them missing a greater amount of school than average.
+The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic. In particular, we will be examining attendance rates between students who qualified for free or reduced price lunch against the attendance rates of the student body as a whole. We believe that the effects of the COVID-19 pandemic has had an unequal affect on students who qualify for food assistance, resulting in them missing a greater amount of school than average.
 
-- The opening sentence or sentences should draw the reader into your report by providing high-level motivation for the analysis. 
-- Describe the question or questions of interest and the motivation for the analysis.
-- Conclude the introduction with a thesis statement.
-- A thesis statement comprises one or two declarative sentences that summarize the main point of the report and clearly makes an assertion and communicates to the reader the position the authors have taken on the topic.
+-[X] The opening sentence or sentences should draw the reader into your report by providing high-level motivation for the analysis. 
+-[X] Describe the question or questions of interest and the motivation for the analysis.
+-[X] Conclude the introduction with a thesis statement.
+  -[] A thesis statement comprises one or two declarative sentences that summarize the main point of the report and clearly makes an assertion and communicates to the reader the position the authors have taken on the topic.
 
 
 # Background
@@ -56,11 +56,11 @@ Data from https://catalog.data.gov/dataset/school-attendance-by-student-group-an
 
 This data set was collected by State of Connecticut Department of Education^[https://catalog.data.gov/dataset/school-attendance-by-student-group-and-district-2021-2022] to measure attendance rates for all of the school districts in the state. Data for certain groups were suppressed to either maintain anonymity or to prevent misinterpretation of statistics from very small sample sizes as being as representative as those from larger ones. As a result, schools that didn't have published statistics on the attendance of students who qualified for free/reduced price meals were excluded. 
 
-- Describe the data set, how it was collected, what the variables mean.
-- Cite the source of your data.
-- Describe any background information needed to better comprehend the question or questions you are posing and how the data relate to the question.
-- Describe any unusual factors which may affect interpretation of results.
-- Describe what you intend to do in the rest of the report.
+-[X] Describe the data set, how it was collected, what the variables mean.
+-[X] Cite the source of your data.
+-[] Describe any background information needed to better comprehend the question or questions you are posing and how the data relate to the question.
+-[X] Describe any unusual factors which may affect interpretation of results.
+-[] Describe what you intend to do in the rest of the report.
 
 # Analysis
 
@@ -84,22 +84,22 @@ attendance %>% ggplot(aes(x = attendance_rate)) +
 
 ```
 
-- Include numerical and graphical summaries of the data. Be sure to introduce and describe your numerical and graphical summaries.  Do not display a series of summaries without text explaining them.
-- Make sure to include at least one graphical display of the data that best supports your main conclusions for your primary question, and explain how it supports your conclusions.
-- For each inference you make, briefly describe the method you use and what the results are.
-- Provide evidence to support each of your claims.
-- This section should not include substantial interpretation of results. Leave that for the discussion.
+-[] Include numerical and graphical summaries of the data. Be sure to introduce and describe your numerical and graphical summaries.  Do not display a series of summaries without text explaining them.
+-[] Make sure to include at least one graphical display of the data that best supports your main conclusions for your primary question, and explain how it supports your conclusions.
+-[] For each inference you make, briefly describe the method you use and what the results are.
+-[] Provide evidence to support each of your claims.
+-[] This section should not include substantial interpretation of results. Leave that for the discussion.
 
 # Discussion
 
-- Provide broader interpretations of your analysis and describe how to interpret your results with respect to your question of interest.
-- Discuss any potential short-comings of the analysis.
-- Discuss potential future directions for additional work
-- New questions
-- Different methods to address the same questions
-- New data you might collect to refine your understanding
-- Summarize your primary conclusions and the primary evidence that supports these conclusions.
+-[] Provide broader interpretations of your analysis and describe how to interpret your results with respect to your question of interest.
+-[] Discuss any potential short-comings of the analysis.
+-[] Discuss potential future directions for additional work
+-[] New questions
+-[] Different methods to address the same questions
+-[] New data you might collect to refine your understanding
+-[] Summarize your primary conclusions and the primary evidence that supports these conclusions.
 
 # References
 
-- In the R Markdown file, you may automatically cite other resources by using a caret followed by the reference between square brackets: ^[your reference text] which will place a marker at this location and a footnote at the end of the document.
+-[] In the R Markdown file, you may automatically cite other resources by using a caret followed by the reference between square brackets: ^[your reference text] which will place a marker at this location and a footnote at the end of the document.
