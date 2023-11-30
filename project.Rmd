@@ -34,9 +34,13 @@ attendance_orig$year = attendance_orig$year %>% str_replace("\\.", "-")
 attendance = attendance_orig %>% 
   filter(group == "Free/Reduced Price Meal Eligible" |
            group == "All Students") %>% 
+  filter(year != "2021-2022") %>% 
+  group_by(district_name) %>% 
   filter(!is.na(count) & !is.na(attendance_rate)) %>% 
-  filter(year != "2021-2022")
-
+  mutate(n = n()) %>%
+  filter(n == 4) %>%
+  select(-n)
+  
 ```
 
 
@@ -80,6 +84,27 @@ attendance %>% ggplot(aes(x = attendance_rate)) +
        y = "Density") + 
   theme(strip.text.y.right = element_text(angle = 0))
 
+```
+
+```{r}
+t.test(
+  attendance %>% 
+    filter(year == "2019-2020") %>% 
+    filter(group == "All Students") %>% 
+    select(attendance_rate) -
+    attendance %>% 
+    filter(year == "2019-2020") %>% 
+    filter(group == "Free/Reduced Price Meal Eligible") %>% 
+    select(attendance_rate), 
+  attendance %>% 
+    filter(year == "2020-2021") %>% 
+    filter(group == "All Students") %>% 
+    select(attendance_rate) -
+    attendance %>% 
+    filter(year == "2020-2021") %>% 
+    filter(group == "Free/Reduced Price Meal Eligible") %>% 
+    select(attendance_rate), 
+)
 ```
 
 
