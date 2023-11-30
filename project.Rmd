@@ -39,7 +39,8 @@ attendance = attendance_orig %>%
   filter(!is.na(count) & !is.na(attendance_rate)) %>% 
   mutate(n = n()) %>%
   filter(n == 4) %>%
-  select(-n)
+  select(-n) %>% 
+  ungroup()
   
 ```
 
@@ -106,8 +107,6 @@ t.test(
     select(attendance_rate), 
 )
 ```
-
-
 
 -[] Include numerical and graphical summaries of the data. Be sure to introduce and describe your numerical and graphical summaries.  Do not display a series of summaries without text explaining them.
 -[] Make sure to include at least one graphical display of the data that best supports your main conclusions for your primary question, and explain how it supports your conclusions.

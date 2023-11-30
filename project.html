@@ -429,7 +429,17 @@ attendance %&gt;% ggplot(aes(x = attendance_rate)) +
     filter(group == &quot;Free/Reduced Price Meal Eligible&quot;) %&gt;% 
     select(attendance_rate), 
 )</code></pre>
-<pre><code>## Error in FUN(left, right): non-numeric argument to binary operator</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  attendance %&gt;% filter(year == &quot;2019-2020&quot;) %&gt;% filter(group == &quot;All Students&quot;) %&gt;% select(attendance_rate) - attendance %&gt;% filter(year == &quot;2019-2020&quot;) %&gt;% filter(group == &quot;Free/Reduced Price Meal Eligible&quot;) %&gt;% select(attendance_rate) and attendance %&gt;% filter(year == &quot;2020-2021&quot;) %&gt;% filter(group == &quot;All Students&quot;) %&gt;% select(attendance_rate) - attendance %&gt;% filter(year == &quot;2020-2021&quot;) %&gt;% filter(group == &quot;Free/Reduced Price Meal Eligible&quot;) %&gt;% select(attendance_rate)
+## t = -11.829, df = 288.38, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.01412371 -0.01009409
+## sample estimates:
+##   mean of x   mean of y 
+## 0.009372251 0.021481152</code></pre>
 <p>-[] Include numerical and graphical summaries of the data. Be sure to
 introduce and describe your numerical and graphical summaries. Do not
 display a series of summaries without text explaining them. -[] Make
