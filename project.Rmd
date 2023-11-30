@@ -61,9 +61,9 @@ This data set was collected by State of Connecticut Department of Education^[htt
 
 # Analysis
 
-Below we can see the median attendance rates for students, split into 
+Below we can see the median attendance rates for students, grouped by year and 
 
-```{r}
+```{r, echo = FALSE}
 
 attendance_rate_mean = attendance %>% 
   group_by(year, group) %>% 
@@ -81,7 +81,7 @@ attendance %>% ggplot(aes(x = attendance_rate)) +
 
 ```
 
-```{r}
+```{r, echo = FALSE}
 
 attendance_diff_2019 = attendance %>% 
     filter(year == "2019-2020") %>% 
@@ -102,7 +102,7 @@ attendance_diff_2019 = attendance %>%
     select(attendance_rate)
 ```
 
-```{r}
+```{r, echo = FALSE}
   ggplot(attendance_diff_2019, aes(x = attendance_rate)) +
     geom_freqpoly(aes(color = "2019-2020")) +
     geom_freqpoly(data = attendance_diff_2020, aes(color = "2020-2021")) +
@@ -112,7 +112,7 @@ attendance_diff_2019 = attendance %>%
        color = "Year")
 ```
 
-```{r}
+```{r, echo = FALSE}
 t.test(attendance_diff_2019, attendance_diff_2020)
 ```
 
