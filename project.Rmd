@@ -19,11 +19,10 @@ theme_set(theme_minimal())
 
 attendance_orig = read_csv("School_Attendance_by_Student_Group_and_District__2021-2022.csv",
                            name_repair = make.names) %>% 
-  select(-Category, -Reporting.period, -Date.update) %>% 
-  rename(district_code = District.code,
-         district_name = District.name,
+  select(-Category, -Reporting.period, -Date.update, -District.code) %>% 
+  rename(district_name = District.name,
          group = Student.group) %>% 
-  pivot_longer(cols = -c(district_code, district_name, group), 
+  pivot_longer(cols = -c(district_name, group), 
                names_pattern = "^X(\\d{4}\\.\\d{4})\\.(\\w+\\.\\w+).*$", 
                names_to = c("year", "name")) %>% 
   pivot_wider(names_from = "name", values_from = "value") %>% 
