@@ -49,21 +49,15 @@ attendance = attendance_orig %>%
 
 The COVID-19 pandemic had far reaching impacts on our daily lives. One area that was greatly affected was education. The main goal of our research was to examine if any groups of students were disproportionately affected during the pandemic. In particular, we will be examining attendance rates between students who qualified for free or reduced price lunch against the attendance rates of the student body as a whole. We believe that the effects of the COVID-19 pandemic has had an UNEQUAL/EQUAL affect on students who qualify for food assistance, resulting in them missing a greater amount of school than average.
 
--[X] The opening sentence or sentences should draw the reader into your report by providing high-level motivation for the analysis. 
--[X] Describe the question or questions of interest and the motivation for the analysis.
--[X] Conclude the introduction with a thesis statement.
--[] A thesis statement comprises one or two declarative sentences that summarize the main point of the report and clearly makes an assertion and communicates to the reader the position the authors have taken on the topic.
+- Conclude the introduction with a thesis statement.
+- A thesis statement comprises one or two declarative sentences that summarize the main point of the report and clearly makes an assertion and communicates to the reader the position the authors have taken on the topic.
 
 
 # Background
 
 This data set was collected by State of Connecticut Department of Education^[https://catalog.data.gov/dataset/school-attendance-by-student-group-and-district-2021-2022] to measure attendance rates for all of the school districts in the state. Data for certain groups were suppressed to either maintain anonymity or to prevent misinterpretation of statistics from very small sample sizes as being as representative as those from larger ones. As a result, schools that didn't have published statistics on the attendance of students who qualified for free/reduced price meals were excluded. In the state of Connecticut, students who qualify for free/ reduced price meals belong to households eligible for SNAP or TFA benefits^[https://portal.ct.gov/-/media/SDE/Nutrition/NSLP/Forms/FreeRed/Parent_Letter_FAQ_Free_Reduced_Meals_NSLP_SBP.docx], which mostly includes households at or under two times the Federal Poverty Level.
 
--[X] Describe the data set, how it was collected, what the variables mean.
--[X] Cite the source of your data.
--[] Describe any background information needed to better comprehend the question or questions you are posing and how the data relate to the question.
--[X] Describe any unusual factors which may affect interpretation of results.
--[] Describe what you intend to do in the rest of the report.
+- Describe what you intend to do in the rest of the report.
 
 # Analysis
 
@@ -88,24 +82,38 @@ attendance %>% ggplot(aes(x = attendance_rate)) +
 ```
 
 ```{r}
-t.test(
-  attendance %>% 
+
+attendance_diff_2019 = attendance %>% 
     filter(year == "2019-2020") %>% 
     filter(group == "All Students") %>% 
     select(attendance_rate) -
     attendance %>% 
     filter(year == "2019-2020") %>% 
     filter(group == "Free/Reduced Price Meal Eligible") %>% 
-    select(attendance_rate), 
-  attendance %>% 
+    select(attendance_rate)
+
+  attendance_diff_2020 = attendance %>% 
     filter(year == "2020-2021") %>% 
     filter(group == "All Students") %>% 
     select(attendance_rate) -
     attendance %>% 
     filter(year == "2020-2021") %>% 
     filter(group == "Free/Reduced Price Meal Eligible") %>% 
-    select(attendance_rate), 
-)
+    select(attendance_rate)
+```
+
+```{r}
+  ggplot(attendance_diff_2019, aes(x = attendance_rate)) +
+    geom_freqpoly(aes(color = "2019-2020")) +
+    geom_freqpoly(data = attendance_diff_2020, aes(color = "2020-2021")) +
+  labs(title = "Difference Between Attendance Rates",
+       x = "Difference between Attendance Rates",
+       y = "Frequency",
+       color = "Year")
+```
+
+```{r}
+t.test(attendance_diff_2019, attendance_diff_2020)
 ```
 
 -[] Include numerical and graphical summaries of the data. Be sure to introduce and describe your numerical and graphical summaries.  Do not display a series of summaries without text explaining them.
@@ -125,5 +133,3 @@ t.test(
 -[] Summarize your primary conclusions and the primary evidence that supports these conclusions.
 
 # References
-
--[] In the R Markdown file, you may automatically cite other resources by using a caret followed by the reference between square brackets: ^[your reference text] which will place a marker at this location and a footnote at the end of the document.
