@@ -51,11 +51,10 @@ The COVID-19 pandemic had far reaching impacts on our daily lives. One area that
 
 # Background
 
-This data set was collected by State of Connecticut Department of Education^[https://catalog.data.gov/dataset/school-attendance-by-student-group-and-district-2021-2022] to measure attendance rates for all of the school districts in the state. Data for certain groups were suppressed to either maintain anonymity or to prevent misinterpretation of statistics from very small sample sizes as being as representative as those from larger ones. As a result, schools that didn't have published statistics on the attendance of students who qualified for free/reduced price meals were excluded. In the state of Connecticut, students who qualify for free/ reduced price meals belong to households eligible for SNAP or TFA benefits^[https://portal.ct.gov/-/media/SDE/Nutrition/NSLP/Forms/FreeRed/Parent_Letter_FAQ_Free_Reduced_Meals_NSLP_SBP.docx], which mostly includes households at or under two times the Federal Poverty Level.
+This data set was collected by State of Connecticut Department of Education^[https://data.ct.gov/Education/School-Attendance-by-Student-Group-and-District-20/t4hx-jd4c/about_data] to measure attendance rates for all of the school districts in the state. Data for certain groups were suppressed to either maintain anonymity or to prevent misinterpretation of statistics from very small sample sizes as being as representative as those from larger ones. As a result, schools that didn't have published statistics on the attendance of students who qualified for free/reduced price meals were excluded.
+From this dataset, we mainly used the attendance rate variable and the group. For this dataset, attendance rate was defined as being the average of the proportion of days attended by students in a given group, for a given school year. For the purposes of this study, we focused in on two of the groups provided by the data, being free/reduced price meal eligible students and the student body as a whole. We used difference between these variables to calculate the data for students eligible for free/reduced price meals and those who were ineligible for free/reduced price meals. In the state of Connecticut, students who qualify for free/reduced price meals belong to households eligible for SNAP or TFA benefits^[https://portal.ct.gov/-/media/SDE/Nutrition/NSLP/Forms/FreeRed/Parent_Letter_FAQ_Free_Reduced_Meals_NSLP_SBP.docx], which mostly includes households at or under two times the Federal Poverty Level.
 
 # Analysis
-
-Below we can see the median attendance rates for students, grouped by year and whether they are eligible for free/reduced price meals.
 
 ```{r, echo = FALSE}
 attendancetest1 = attendance %>%
@@ -80,16 +79,20 @@ free1 = attendancetest1 %>%
   select(!c(`nonfree AR`, `Count`)) %>%
   drop_na() %>%
   pivot_wider(names_from = `year`, values_from = `FRPME AR`) %>%
-  mutate(difference = `2020-2021` - `2019-2020`)
+  mutate(difference = `2020-2021` - `2019-2020`,
+         Group = recode(Group, "FRPME" = "Eligible for Free/ Reduced Price Meals"))
 
 nonfree1 = attendancetest1 %>%
   filter(Group == "nonfree") %>%
   select(!c(`FRPME AR`, `Count`)) %>%
   drop_na() %>%
   pivot_wider(names_from = `year`, values_from = `nonfree AR`) %>%
-  mutate(difference = `2020-2021` - `2019-2020`) %>% 
-  replace_na(list(`2019-2020` = 100, difference = 0))
+  mutate(difference = `2020-2021` - `2019-2020`,
+         Group = recode(Group, "nonfree" = "Not Eligible for Free/ Reduced Price Meals")) %>% 
+  replace_na(list(`2019-2020` = 1, difference = 0))
 ```
+
+In the graph below we can see the median attendance rates for students, grouped by year and whether they are eligible for free/reduced price meals. From the graphs, we can see that students that weren't eligible for free/reduced price meals had a higher median attendance rate and less variance than students who were eligible for free/reduced price meals. We can also see that both groups had an increase in variance between the 2019-2020 and 2020-2021 school years. 
 
 ```{r, echo = FALSE}
 
@@ -104,18 +107,60 @@ free1_long = free1 %>%
   pivot_longer(cols = c(`2020-2021`, `2019-2020`),
                names_to = "year",
                values_to = "attendance_rate")
-
+  
 
 ggplot() +
-  geom_density(data = free1_long, 
-               aes(x = attendance_rate, 
-                   fill = "Eligible for Free/Reduced Price Meals"), 
-               alpha = 0.5) +
-  geom_density(data = nonfree1_long, 
-               aes(x = attendance_rate, 
-                   fill = "Not Eligible for Free/Reduced Price Meals"), 
-               alpha = 0.5) +
-  facet_grid(rows = vars(year)) +
+  # Free Lunch Students
+  geom_density(data = free1_long, aes(x = attendance_rate, fill = Group), alpha = 0.5) +
+    # 2019-2020
+      # Mean
+  geom_vline(data = filter(free1_long, year == "2019-2020"),
+             aes(xintercept = mean(attendance_rate))) +
+      # SD 
+  geom_vline(data = filter(free1_long, year == "2019-2020"),
+             aes(xintercept = mean(attendance_rate) - sd(attendance_rate)),
+             linetype = "dashed") +
+  geom_vline(data = filter(free1_long, year == "2019-2020"),
+             aes(xintercept = mean(attendance_rate) + sd(attendance_rate)),
+             linetype = "dashed") +
+    # 2020-2021
+      # Mean
+  geom_vline(data = filter(free1_long, year == "2020-2021"),
+             aes(xintercept = mean(attendance_rate))) +
+      # SD 
+  geom_vline(data = filter(free1_long, year == "2020-2021"),
+             aes(xintercept = mean(attendance_rate) - sd(attendance_rate)),
+             linetype = "dashed") +
+  geom_vline(data = filter(free1_long, year == "2020-2021"),
+             aes(xintercept = mean(attendance_rate) + sd(attendance_rate)),
+             linetype = "dashed") +
+  
+  # Non Free Lunch Students
+  geom_density(data = nonfree1_long, aes(x = attendance_rate, fill = Group), alpha = 0.5) +
+    # 2019-2020
+      # Mean
+  geom_vline(data = filter(nonfree1_long, year == "2019-2020"),
+             aes(xintercept = mean(attendance_rate))) +
+      # SD
+  geom_vline(data = filter(nonfree1_long, year == "2019-2020"),
+             aes(xintercept = mean(attendance_rate) - sd(attendance_rate)),
+             linetype = "dashed") +
+  geom_vline(data = filter(nonfree1_long, year == "2019-2020"),
+             aes(xintercept = mean(attendance_rate) + sd(attendance_rate)),
+             linetype = "dashed") +
+    # 2020-2021
+      # Mean
+  geom_vline(data = filter(nonfree1_long, year == "2020-2021"),
+             aes(xintercept = mean(attendance_rate))) +
+      # SD 
+  geom_vline(data = filter(nonfree1_long, year == "2020-2021"),
+             aes(xintercept = mean(attendance_rate) - sd(attendance_rate)),
+             linetype = "dashed") +
+  geom_vline(data = filter(nonfree1_long, year == "2020-2021"),
+             aes(xintercept = mean(attendance_rate) + sd(attendance_rate)),
+             linetype = "dashed") +
+  
+  facet_grid(year ~ Group, labeller = labeller(Group = label_wrap_gen(25))) +
   labs(title = "Attendance rates for Students in Conn.",
        x = "Attendance Rate",
        y = "Density",
@@ -125,29 +170,45 @@ ggplot() +
 
 ```
 
-In the graph below, we can see the difference in attendance between students eligible for free/reduced price meals and students who are not eligible, broken up by school year. 
+In the graph below, we can see the difference in attendance between the 2019-2020 and 2020-2021 school year for students eligible for free/reduced price meals and students who are not eligible. From the graph, we can see that while both graphs are left skewed, students who were not eligible for free/reduced price meals had less variance and a median closer to 0 than students eligible for free/reduced price meals.
 
 ```{r, echo = FALSE}
-  ggplot() +
-    geom_density(data = free1, aes(x = difference, fill = "Eligible for Free/Reduced Price Lunch"), alpha = 0.5) +
-    geom_density(data = nonfree1, aes(x = difference, fill = "Not Eligible for Free/Reduced Price Lunch"), alpha = 0.5) +
-  labs(title = "Difference in Attendence between the 2019-2020 school year and 2020-2021 school year",
+ggplot() +
+  geom_density(data = free1, aes(x = difference, fill = Group), alpha = 0.5) +
+  geom_vline(data = free1, aes(xintercept = mean(difference))) +
+  geom_vline(data = free1,
+             aes(xintercept = mean(difference) - sd(difference)),
+             linetype = "dashed") +
+  geom_vline(data = free1,
+             aes(xintercept = mean(difference) + sd(difference)),
+             linetype = "dashed") +
+  geom_density(data = nonfree1, aes(x = difference, fill = Group), alpha = 0.5) +
+  geom_vline(data = nonfree1,aes(xintercept = mean(difference))) +
+  geom_vline(data = nonfree1,
+             aes(xintercept = mean(difference) - sd(difference)),
+             linetype = "dashed") +
+  geom_vline(data = nonfree1,
+             aes(xintercept = mean(difference) + sd(difference)),
+             linetype = "dashed") +
+  labs(title = str_wrap("Difference in Attendence between the 2019-2020 school year and the 2020-2021 school year", 65),
        x = "Difference between Attendance Rates",
        y = "Frequency",
-       fill = "Eligibility")
+       fill = "Eligibility") +
+  theme(strip.text.y.right = element_text(angle = 0)) +
+  facet_grid(Group ~ ., labeller = labeller(Group = label_wrap_gen(25)))
 ```
 
-We can see that means of the difference between students eligible for free/reduced meals and those who are not eligible, but in order to test if it is statistically significant, 
+We can see that means of the difference between students eligible for free/reduced price meals and those who are not eligible, but in order to test if it is statistically significant, 
 
-```{r, echo = FALSE}
+```{r, include = FALSE}
 t.test(nonfree1$difference, free1$difference)
 ```
 
 # Discussion
 
-We have sufficient evidence ($p$ = 2.025e-11) that the difference for attendance rates between 2019-2020 and 2020-2021 for free/reduced meal eligible students was greater than that for normal students. Thus, we can conclude that the pandemic negatively impacted free/reduced price meal eligible students more than those who are not eligible. Some possible short-comings are that we don’t have a general baseline before Covid happened because our baseline year (2019-2020) was still affected by Covid towards the end of the year. Another short-coming is that we don’t know how a school counted an absence, meaning that one school could count only missing a short amount of time an absence and another would only count an entire day missed as an absence. Future work could involve a more detailed exploration of these external factors and their impact on attendance disparities. Additionally, a deeper dive into subgroup analyses within the "Free/Reduced Price Meal Eligible" category may provide more nuanced insights.
+We have sufficient evidence ($p$ = 2.025e-11) that the difference for attendance rates between 2019-2020 and 2020-2021 for free/reduced price meal eligible students was greater than that for normal students. Thus, we can conclude that the pandemic negatively impacted free/reduced price meal eligible students more than those who are not eligible. Some possible short-comings are that we don’t have a general baseline before Covid happened because our baseline year (2019-2020) was still affected by Covid towards the end of the year. Another short-coming is that we don’t know how a school counted an absence, meaning that one school could count only missing a short amount of time an absence and another would only count an entire day missed as an absence. Future work could involve a more detailed exploration of these external factors and their impact on attendance disparities. Additionally, a deeper dive into subgroup analyses within the "Free/Reduced Price Meal Eligible" category may provide more nuanced insights.
 
-Some topics of further research can cover how Covid-19 affected the attendance of students of different races or if there is a specific group of students that make up a large percentage of the free/price reduced meal eligible group?
+Some topics of further research can cover how Covid-19 affected the attendance of students of different races or if there is a specific group of students that make up a large percentage of the free/price reduced price meal eligible group?
 
 Rather than finding the difference between school years for each group then comparing them with the other, we can find the difference between groups for each school year, then comparing them to see whether that difference is greater between school years. The inclusion of data from more years enables us to track attendance rate trends over an extended period, providing a nuanced understanding of how attendance patterns have evolved during the ongoing impact of the COVID-19 pandemic. Our primary conclusion is that the pandemic negatively impacted free/reduced price meal eligible students more than those who are not eligible. Our primary evidence that supports these conclusion is a two sample t-test done between the attendances differences from 2019-2020 to 2020-2021 of free/reduced price meal eligible students and those who are not eligible. The results of the t-test were t = 6.941 and a p-value of 2.025e-11
 
