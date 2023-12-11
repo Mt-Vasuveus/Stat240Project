@@ -51,7 +51,7 @@ The COVID-19 pandemic had far reaching impacts on our daily lives. One area that
 
 # Background
 
-This data set was collected by State of Connecticut Department of Education^[https://data.ct.gov/Education/School-Attendance-by-Student-Group-and-District-20/t4hx-jd4c/about_data] to measure attendance rates for all of the school districts in the state. Data for certain groups were suppressed to either maintain anonymity or to prevent misinterpretation of statistics from very small sample sizes as being as representative as those from larger ones. As a result, schools that didn't have published statistics on the attendance of students who qualified for free/reduced price meals were excluded.
+This data set was collected by State of Connecticut Department of Education^[https://data.ct.gov/Education/School-Attendance-by-Student-Group-and-District-20/t4hx-jd4c/about_data] from November 21, 2021 to July 22, 2022 to measure attendance rates for all of the public school districts in the state. Data for certain groups were suppressed to either maintain anonymity or to prevent misinterpretation of statistics from very small sample sizes as being as representative as those from larger ones. As a result, schools that didn't have published statistics on the attendance of students who qualified for free/reduced price meals were excluded. Additionally, private schools, charter schools, and higher education are not included in the data, which might cause any findings to not be representative of all students in the state.
 
 From this dataset, we mainly used the attendance rate variable and the group. For this dataset, attendance rate was defined as being the average of the proportion of days attended by students in a given group, for a given school year. For the purposes of this study, we focused in on two of the groups provided by the data, being free/reduced price meal eligible students and the student body as a whole. We used difference between these variables to calculate the data for students eligible for free/reduced price meals and those who were ineligible for free/reduced price meals. In the state of Connecticut, students who qualify for free/reduced price meals belong to households eligible for SNAP or TFA benefits^[https://portal.ct.gov/-/media/SDE/Nutrition/NSLP/Forms/FreeRed/Parent_Letter_FAQ_Free_Reduced_Meals_NSLP_SBP.docx], which mostly includes households at or under two times the Federal Poverty Level.
 
@@ -92,6 +92,18 @@ nonfree1 = attendancetest1 %>%
          Group = recode(Group, "nonfree" = "Not Eligible for Free/ Reduced Price Meals")) %>% 
   replace_na(list(`2019-2020` = 1, difference = 0))
 ```
+
+Let us define the following variables:
+
+$\mu_{free}:$ The mean of the difference in attendance rate between the two school years for studens not eligible for free/reduced price lunch in Connecticut
+
+$\mu_{non-free}:$ The mean of the difference in attendance rate between the two school years for studens eligible for free/reduced price lunch in Connecticut
+
+We will have the following hypotheses:
+
+$H_0: \mu_\text{free} = \mu_{\text{non-free}}$
+
+$H_1: \mu_\text{free} \ne \mu_\text{non-free}$
 
 In the graph below we can see the median attendance rates for students, grouped by year and whether they are eligible for free/reduced price meals. From the graphs, we can see that students that weren't eligible for free/reduced price meals had a higher median attendance rate and less variance than students who were eligible for free/reduced price meals. We can also see that both groups had an increase in variance between the 2019-2020 and 2020-2021 school years. 
 
@@ -199,18 +211,24 @@ ggplot() +
   facet_grid(Group ~ ., labeller = labeller(Group = label_wrap_gen(25)))
 ```
 
-We can see that means of the difference between students eligible for free/reduced price meals and those who are not eligible, but in order to test if it is statistically significant, 
+We can see that means of the difference between students eligible for free/reduced price meals and those who are not eligible, but in order to test if it is statistically significant, we can run a Welch Two Sample t-test. 
 
 ```{r, include = FALSE}
 t.test(nonfree1$difference, free1$difference)
 ```
 
+We have strong evidence that the mean of the impact of the 2020-2021 school year had a stronger impact on students eligible for free/reduced price meals than the mean of the impact of the 2020-2021 school year on students not eligible for free/reduced price meals ($p = 1.808*10^{-11}$, two-sided t-test, unequal variances)
+
 # Discussion
 
-We have sufficient evidence ($p$ = 2.025e-11) that the difference for attendance rates between 2019-2020 and 2020-2021 for free/reduced price meal eligible students was greater than that for normal students. Thus, we can conclude that the pandemic negatively impacted free/reduced price meal eligible students more than those who are not eligible. Some possible short-comings are that we don’t have a general baseline before Covid happened because our baseline year (2019-2020) was still affected by Covid towards the end of the year. Another short-coming is that we don’t know how a school counted an absence, meaning that one school could count only missing a short amount of time an absence and another would only count an entire day missed as an absence. Future work could involve a more detailed exploration of these external factors and their impact on attendance disparities. Additionally, a deeper dive into subgroup analyses within the "Free/Reduced Price Meal Eligible" category may provide more nuanced insights.
+We have sufficient evidence that the difference for attendance rates between 2019-2020 and 2020-2021 for free/reduced price meal eligible students was greater than that for normal students. Thus, we can conclude that the pandemic negatively impacted free/reduced price meal eligible students more than those who are not eligible. Some possible short-comings are that we don’t have a general baseline before Covid happened because our baseline year (2019-2020) was still affected by Covid towards the end of the year. Another short-coming is that we don’t know how a school counted an absence, meaning that one school could count only missing a short amount of time an absence and another would only count an entire day missed as an absence. Future work could involve a more detailed exploration of these external factors and their impact on attendance disparities. Additionally, a deeper dive into subgroup analyses within the "Free/Reduced Price Meal Eligible" category may provide more nuanced insights.
 
 Some topics of further research can cover how Covid-19 affected the attendance of students of different races or if there is a specific group of students that make up a large percentage of the free/price reduced price meal eligible group?
 
-Rather than finding the difference between school years for each group then comparing them with the other, we can find the difference between groups for each school year, then comparing them to see whether that difference is greater between school years. The inclusion of data from more years enables us to track attendance rate trends over an extended period, providing a nuanced understanding of how attendance patterns have evolved during the ongoing impact of the COVID-19 pandemic. Our primary conclusion is that the pandemic negatively impacted free/reduced price meal eligible students more than those who are not eligible. Our primary evidence that supports these conclusion is a two sample t-test done between the attendances differences from 2019-2020 to 2020-2021 of free/reduced price meal eligible students and those who are not eligible. The results of the t-test were t = 6.941 and a p-value of 2.025e-11
+Rather than finding the difference between school years for each group then comparing them with the other, we can find the difference between groups for each school year, then comparing them to see whether that difference is greater between school years. The inclusion of data from more years enables us to track attendance rate trends over an extended period, providing a nuanced understanding of how attendance patterns have evolved during the ongoing impact of the COVID-19 pandemic. Our primary conclusion is that the pandemic negatively impacted free/reduced price meal eligible students more than those who are not eligible. 
+
+One way that these results can be interpreted can be as a signal of how income inequality effects many other aspects of ones life. As mentioned previously, in order to qualify for free/reduced prices meals in the state of Connecticut, a household must fall at or below two times the federal poverty line. Since household income is usually out of the control of students, this can be viewed as how parents in precarious financial situations, especially in disruptive environments like the COVID-19 pandemic.
+
+Going forward, the results of this study show that student eligible for free/reduced price meals need to be better supported by the education system. These students are often home to families working jobs classified as essential workers, who now had a harder time managing their work-life balance when they have children who are home full time instead of being at school. These results can be used to inform studies looking into how to best support low-income households in society.
 
 # References
